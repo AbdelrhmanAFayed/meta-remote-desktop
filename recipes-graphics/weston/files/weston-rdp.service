@@ -1,0 +1,14 @@
+[Unit]
+Description=Weston RDP Compositor
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/weston --backend=rdp-backend.so \
+    --rdp-tls-cert=/etc/weston/rdp-cert.pem \
+    --rdp-tls-key=/etc/weston/rdp-key.pem \
+    --idle-time=0
+Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target

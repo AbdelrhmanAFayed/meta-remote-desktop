@@ -1,32 +1,29 @@
-DESCRIPTION = "Weston-based image with WayVNC for remote access"
+DESCRIPTION = "Weston-based image with RDP for remote access"
 LICENSE = "CLOSED"
 
 require recipes-graphics/images/core-image-weston.bb
 
-IMAGE_INSTALL:append = " wayvnc"
+# Install required packages
+IMAGE_INSTALL:append = " weston weston-init freerdp"
 
-# Ensure Weston and WayVNC are installed in the image
-IMAGE_INSTALL:append = " weston wayvnc"
-IMAGE_INSTALL:append = " weston"
-
-IMAGE_INSTALL:append = " systemd systemd-analyze systemd-boot systemd-extra-utils"
-
-
-
+# Enable systemd
 DISTRO_FEATURES:append = " systemd"
 VIRTUAL-RUNTIME_init_manager = "systemd"
 VIRTUAL-RUNTIME_initscripts = ""
 
+# Enable Weston RDP service at boot
+SYSTEMD_AUTO_ENABLE:append = " weston-rdp"
 
+SYSTEMD_SERVICE:${PN} = "weston-rdp.service"
+SYSTEMD_AUTO_ENABLE:${PN} = "enable"
 
+ROOTFS_POSTPROCESS_COMMAND:append = " generate_rdp_cert; "
 
-SYSTEMD_AUTO_ENABLE:append = " weston-headless wayvnc"
-
-
-SYSTEMD_AUTO_ENABLE:append = " weston-headless"
-
-
-# Enable systemd services after installation
-SYSTEMD_AUTO_ENABLE:append = " weston wayvnc"
-
+generate_rdp_cert() {
+    install -d ${IMAGE_ROOTFS}/etc/weston
+    openssl req -new -x509 -days 365 -nodes \
+        -out ${IMAGE_ROOTFS}/etc/weston/rdp-cert.pem \
+        -keyout ${IMAGE_ROOTFS}/etc/weston/rdp-key.pem \
+        -subj "/CN=weston-rdp"
+}
 

@@ -1,0 +1,10 @@
+FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
+SRC_URI += "file://eth0.network"
+
+do_install:append() {
+    install -d ${D}/etc/systemd/network/
+    install -m 644 ${WORKDIR}/eth0.network ${D}/etc/systemd/network/
+}
+
+SYSTEMD_SERVICE:${PN} += "systemd-networkd.service"
+SYSTEMD_AUTO_ENABLE:${PN} = "enable"

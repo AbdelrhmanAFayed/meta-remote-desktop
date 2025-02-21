@@ -1,16 +1,15 @@
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
-SRC_URI:append = " file://weston-headless.service"
+SRC_URI:append = " file://weston-rdp.service"
+
+PACKAGECONFIG:append = " rdp"
+
 
 do_install:append() {
     install -d ${D}${systemd_system_unitdir}
-    install -m 0644 ${WORKDIR}/weston-headless.service ${D}${systemd_system_unitdir}/weston-headless.service
+    install -m 0644 ${WORKDIR}/weston-rdp.service ${D}${systemd_system_unitdir}/weston-rdp.service
 }
 
-FILES:${PN} += "${systemd_system_unitdir}/weston-headless.service"
-FILES_${PN} += "${libdir}/libweston-10/headless-backend.so"
+FILES:${PN} += "${systemd_system_unitdir}/weston-rdp.service"
 
-PACKAGECONFIG:append = " headless"
-
-
-SYSTEMD_SERVICE:${PN} = "weston-headless.service"
+SYSTEMD_SERVICE:${PN} = "weston-rdp.service"
