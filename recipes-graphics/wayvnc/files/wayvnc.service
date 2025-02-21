@@ -1,0 +1,14 @@
+[Unit]
+Description=WayVNC Remote Desktop Server
+After=weston-headless.service
+Requires=weston-headless.service
+
+[Service]
+ExecStart=/usr/bin/wayvnc
+Restart=always
+User=root
+Environment="XDG_RUNTIME_DIR=/run/user/0"
+Environment="WAYLAND_DISPLAY=wayland-0"
+
+[Install]
+WantedBy=multi-user.target
